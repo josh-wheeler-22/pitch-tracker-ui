@@ -16,7 +16,7 @@ import { convertZone } from "./utils/utils";
 import "./App.css";
 
 function App() {
-  // State
+  // State t
   const [game, setGame] = useState({
     team1: {
       name: "",
@@ -213,7 +213,7 @@ function App() {
             </Grid>
             <Grid size={4} item>
               <Box justifyContent="center" alignItems="center">
-                
+
                 {/* STRIKEZONE SELECTION */}
                 <Strikezone setZone={setZone} zone={zone} />
 
