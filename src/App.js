@@ -12,15 +12,35 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ProfileDisplay from "./components/PitcherDisplay/PitcherDisplay";
 import PitchHistory from "./components/PitchHistory/PitchHistory";
+import { convertZone } from "./utils/utils";
 import "./App.css";
 
 function App() {
   // State
+  const [game, setGame] = useState({
+    team1: {
+      name: "",
+      lineup: [
+        { name: "", hand: "R"}
+      ],
+      pitcher: { name: "", hand: "R", atBats: []},
+      score: 0
+    },
+    team2: {
+      name: "",
+      lineup: [
+        { name: "", hand: "R"}
+      ],
+      pitcher: { name: "", hand: "R", atBats: []},
+      score: 0
+    }
+  })
   const [count, setCount] = useState({
     strikes: 0,
     balls: 0,
     fouls: 0,
     pitches: [],
+    hitter: "",
   });
   const [zone, setZone] = useState(null);
   const [pitchType, setPitchType] = useState(null);
@@ -69,8 +89,8 @@ function App() {
           pitchType: pitchType,
           zone: convertZone(zone),
           outcome: name === "balls" ? "ball" : "strike",
-        }
-      ]
+        },
+      ],
     });
 
     setCount({
@@ -106,32 +126,6 @@ function App() {
     //     { type: pitchType, zone: convertZone(zone), outcome: "TODO" },
     //   ],
     // });
-  };
-
-  const convertZone = () => {
-    console.log(zone);
-    switch (zone) {
-      case '0.0':
-        return "Top Left";
-      case '0.1':
-        return "Top Middle";
-      case '0.2':
-        return "Top Right";
-      case '1.0':
-        return "Middle Left";
-      case '1.1':
-        return "Middle Middle";
-      case '1.2':
-        return "Middle Right";
-      case '2.0':
-        return "Bottom Left";
-      case '2.1':
-        return "Bottom Middle";
-      case '2.2':
-        return "Bottom Right";
-      default:
-        return "";
-    }
   };
 
   // COUNT
@@ -219,6 +213,7 @@ function App() {
             </Grid>
             <Grid size={4} item>
               <Box justifyContent="center" alignItems="center">
+                
                 {/* STRIKEZONE SELECTION */}
                 <Strikezone setZone={setZone} zone={zone} />
 
