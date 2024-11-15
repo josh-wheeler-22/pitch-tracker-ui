@@ -213,7 +213,7 @@ function App() {
             <Grid size={4} item>
               <ProfileDisplay pitcher={pitcher} />
               <Typography variant="subtitle1" gutterBottom>
-                Pitch History !!! ({pitcher.pitchCount})
+                Pitch History ({pitcher.pitchCount})
               </Typography>
               <PitchHistory pitches={pitcher.pitches} />
             </Grid>
