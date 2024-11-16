@@ -4,7 +4,6 @@ import Strikezone from "./components/Strikezone/Strikezone";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { AppBar, Toolbar, Button } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PitchTypeModal from "./components/Modals/PitchTypeModal";
 import OutcomeModal from "./components/Modals/OutcomeModal";
@@ -12,7 +11,6 @@ import ProfileDisplay from "./components/PitcherDisplay/PitcherDisplay";
 import PitchHistory from "./components/PitchHistory/PitchHistory";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import OutCounterDisplay from "./components/OutCounterDisplay/OutCounterDisplay"
 import { convertZone } from "./utils/utils";
 import "./App.css";
 
@@ -66,6 +64,8 @@ function App() {
   const [zone, setZone] = useState(null);
   const [activeTeam, setActiveTeam] = useState("team2");
   const [pitchType, setPitchType] = useState(null);
+
+  const [tab, setTab] = useState(0);
 
   // Modals
   const [isPitchTypeModalOpen, setIsPitchTypeModalOpen] = useState(false);
@@ -170,7 +170,9 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <Header setTab={setTab} />
+      <br />
+      <br />
       <ThemeProvider theme={theme}>
         <Container
           maxWidth="xl"
@@ -183,87 +185,59 @@ function App() {
         >
           <br />
           <Grid container spacing={2}>
-            <Grid size={5} sx={{ overflow: "auto", maxHeight: "80vh" }}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                sx={{ color: "white" }}
-              >
-                Away Team
-              </Typography>
-              <ProfileDisplay pitcher={game[activeTeam].pitcher} />
-              <br />
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                sx={{ color: "white" }}
-              >
-                Pitch Feed
-              </Typography>
-              {/* Current Atbat Pitch Feed */}
-              <PitchHistory
-                pitches={game?.[activeTeam]?.currentAtBat?.pitches}
-                hitter={game?.[activeTeam]?.currentAtBat?.hitter}
-              />
-              <br />
-              {/* Previous Atbat Pitch Feed */}
-              {game?.[activeTeam]?.pitcher?.atBats?.reverse()?.map((atBat) => (
-                <>
-                  <PitchHistory
-                    pitches={atBat?.pitches}
-                    hitter={atBat?.hitter}
-                  />
-                </>
-              ))}
-            </Grid>
-            <Grid size={2}>
-              <Box justifyContent="center" alignItems="center">
-                {/* STRIKEZONE SELECTION */}
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  sx={{ color: "white" }}
-                >
-                  Strikezone
-                </Typography>
-                <Strikezone onZoneClick={onZoneClick} zone={zone} />
-                <br />
-                <OutCounterDisplay />
-              </Box>
-            </Grid>
-            <Grid size={5} sx={{ overflow: "auto", maxHeight: "80vh" }}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                sx={{ color: "white" }}
-              >
-                Home Team
-              </Typography>
-              <ProfileDisplay pitcher={game[activeTeam].pitcher} />
-              <br />
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                sx={{ color: "white" }}
-              >
-                Pitch Feed
-              </Typography>
-              {/* Current Atbat Pitch Feed */}
-              <PitchHistory
-                pitches={game?.[activeTeam]?.currentAtBat?.pitches}
-                hitter={game?.[activeTeam]?.currentAtBat?.hitter}
-              />
-              <br />
-              {/* Previous Atbat Pitch Feed */}
-              {game?.[activeTeam]?.pitcher?.atBats?.reverse()?.map((atBat) => (
-                <>
-                  <PitchHistory
-                    pitches={atBat?.pitches}
-                    hitter={atBat?.hitter}
-                  />
-                </>
-              ))}
-            </Grid>
+            {tab === 1 ? (
+              <>
+                <Grid size={{ xs: 1, md: 2, lg: 2, xl: 3 }} sx={{ overflow: "auto", maxHeight: "80vh" }} />
+                <Grid size={{ xs: 10, md: 6, lg: 8, xl: 6 }} sx={{ overflow: "auto", maxHeight: "80vh" }}>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    sx={{ color: "white" }}
+                  >
+                    Away Team
+                  </Typography>
+                  <ProfileDisplay pitcher={game[activeTeam].pitcher} />
+                  <br />
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    sx={{ color: "white" }}
+                  >
+                    Home Team
+                  </Typography>
+                  <ProfileDisplay pitcher={game[activeTeam].pitcher} />
+                </Grid>
+              </>
+            ) : (
+              <>
+              <Grid size={{ xs: 1, md: 2, lg: 2, xl: 3 }}></Grid>
+                <Grid size={{ xs: 10, md: 6, lg: 8, xl: 6 }}>
+                  <Box justifyContent="center" alignItems="center">
+                    {/* STRIKEZONE SELECTION */}
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ color: "white" }}
+                    >
+                      Strikezone
+                    </Typography>
+                    <Strikezone onZoneClick={onZoneClick} zone={zone} />
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      sx={{ color: "white" }}
+                    >
+                      Pitch Feed
+                    </Typography>
+                    {/* Current Atbat Pitch Feed */}
+                    <PitchHistory
+                      pitches={game?.[activeTeam]?.currentAtBat?.pitches}
+                      hitter={game?.[activeTeam]?.currentAtBat?.hitter}
+                    />
+                  </Box>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Container>
         <div>

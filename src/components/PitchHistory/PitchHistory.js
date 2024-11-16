@@ -10,7 +10,6 @@ import Paper from "@mui/material/Paper";
 
 function PitchHistory({ pitches, hitter }) {
   return (
-    <Container>
       <TableContainer component={Paper}>
         <Table aria-label="simple table ">
           <TableHead>
@@ -49,7 +48,6 @@ function PitchHistory({ pitches, hitter }) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Container>
   );
 }
 
