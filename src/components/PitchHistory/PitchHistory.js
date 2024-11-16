@@ -8,21 +8,37 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-function PitchHistory({ pitches }) {
+function PitchHistory({ pitches, hitter }) {
   return (
-    <Container sx={{ backgroundColor: "grey" }}>
-      <TableContainer component={Paper} sx={{ backgroundColor: "grey" }}>
-        <Table aria-label="simple table " sx={{ backgroundColor: "grey" }}>
+    <Container>
+      <TableContainer component={Paper}>
+        <Table aria-label="simple table ">
           <TableHead>
-            <TableRow>
+            <TableRow
+              sx={{
+                "& th": {
+                  color: "rgba(96, 96, 96)",
+                  backgroundColor: "#282c34",
+                  color: "white",
+                },
+              }}
+            >
+              <TableCell>Hitter</TableCell>
+              <TableCell>Count</TableCell>
               <TableCell>Type</TableCell>
               <TableCell align="right">Zone</TableCell>
               <TableCell align="right">Outcome</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {pitches?.map((row, index) => (
+            {pitches?.reverse()?.map((row, index) => (
               <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  t
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  tt
+                </TableCell>
                 <TableCell component="th" scope="row">
                   {row.pitchType}
                 </TableCell>

@@ -1,347 +1,288 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid2";
 import Strikezone from "./components/Strikezone/Strikezone";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Typography } from "@mui/material";
-import BaseballDiamond from "./components/BaseballDiamond/BaseballDiamond";
-import OutCounterDisplay from "./components/OutCounterDisplay/OutCounterDisplay";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import Typography from "@mui/material/Typography";
+import { AppBar, Toolbar, Button } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import PitchTypeModal from "./components/Modals/PitchTypeModal";
+import OutcomeModal from "./components/Modals/OutcomeModal";
 import ProfileDisplay from "./components/PitcherDisplay/PitcherDisplay";
 import PitchHistory from "./components/PitchHistory/PitchHistory";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import OutCounterDisplay from "./components/OutCounterDisplay/OutCounterDisplay"
 import { convertZone } from "./utils/utils";
 import "./App.css";
 
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+});
+
 function App() {
-  // State t
+  // State
   const [game, setGame] = useState({
     team1: {
       name: "",
       lineup: [
-        { name: "", hand: "R"}
+        { name: "Jordan Smith", hand: "R" },
+        { name: "Rory Renk", hand: "R" },
+        { name: "Tim", hand: "R" },
       ],
-      pitcher: { name: "", hand: "R", atBats: []},
-      score: 0
+      pitcher: {
+        name: "",
+        hand: "R",
+        atBats: [],
+      },
+      currentAtBat: {
+        strikes: 0,
+        balls: 0,
+        hitter: "Jordan Smith",
+        pitches: [],
+      },
+      score: 0,
     },
     team2: {
       name: "",
-      lineup: [
-        { name: "", hand: "R"}
-      ],
-      pitcher: { name: "", hand: "R", atBats: []},
-      score: 0
-    }
-  })
-  const [count, setCount] = useState({
-    strikes: 0,
-    balls: 0,
-    fouls: 0,
-    pitches: [],
-    hitter: "",
+      lineup: [{ name: "", hand: "R" }],
+      pitcher: {
+        name: "",
+        hand: "R",
+        atBats: [],
+      },
+      currentAtBat: { strikes: 0, balls: 0, hitter: "", pitches: [] },
+      score: 0,
+    },
   });
   const [zone, setZone] = useState(null);
+  const [activeTeam, setActiveTeam] = useState("team2");
   const [pitchType, setPitchType] = useState(null);
-  const [score, setScore] = useState({ home: 0, away: 0 });
-  const [isAwayBatting, setIsAwayBatting] = useState(true);
-  const [outs, setOuts] = useState(0);
-  const [inning, SetInning] = useState(1);
-  const [bases, setBases] = useState({
-    first: false,
-    second: false,
-    third: false,
-  });
-  const [pitcher, setPitcher] = useState({
-    name: "",
-    runs: 0,
-    strikeouts: 0,
-    walks: 0,
-    singles: 0,
-    doubles: 0,
-    triples: 0,
-    homeruns: 0,
-    innings: 0,
-    pitchCount: 0,
-    pitches: [],
-    atBats: [],
-  });
 
-  const updateCount = (event) => {
-    if (!zone || !pitchType) return;
-    const name = event.target.name;
-
-    setPitcher({
-      ...pitcher,
-      pitchCount: pitcher.pitchCount + 1,
-      atBats: [
-        ...pitcher.atBats,
-        {
-          pitchType: pitchType,
-          zone: convertZone(zone),
-          outcome: name === "balls" ? "ball" : "strike",
-        },
-      ],
-      pitches: [
-        ...pitcher.pitches,
-        {
-          pitchType: pitchType,
-          zone: convertZone(zone),
-          outcome: name === "balls" ? "ball" : "strike",
-        },
-      ],
-    });
-
-    setCount({
-      ...count,
-      [name]: count[name] + 1,
-    });
-
-    setPitchType(null);
-    recordPitch();
-  };
+  // Modals
+  const [isPitchTypeModalOpen, setIsPitchTypeModalOpen] = useState(false);
+  const [isPitchOutcomeModalOpen, setIsPitchOutcomeModalOpen] = useState(false);
+  // team 1
+  const [team1, setTeam1] = useState("");
+  const [pitcher1, setPitcher1] = useState("");
+  const [atBats1, setAtbats1] = useState([]);
+  const [hitters1, setHitters1] = useState([]);
+  // team 2
+  const [team2, setTeam2] = useState("");
+  const [pitcher2, setPitcher2] = useState("");
+  const [atBats2, setAtbats2] = useState([]);
+  const [hitters2, setHitters2] = useState([]);
 
   const updatePitchType = (event) => {
     const name = event.target.name;
 
     setPitchType(name);
+    setIsPitchTypeModalOpen(false);
+    setIsPitchOutcomeModalOpen(true);
   };
 
-  const clearCount = () => {
-    setCount({
-      strikes: 0,
-      balls: 0,
-    });
-  };
+  const updatePitchOutcome = (event) => {
+    const name = event.target.name;
 
-  // TODO - this should be the entry point to every pitch ending
-  // everything else should be a watcher or branch off from this function
-  const recordPitch = () => {
-    // set count
-    // setCount({
-    //   ...count,
-    //   pitches: [
-    //     count.pitches,
-    //     { type: pitchType, zone: convertZone(zone), outcome: "TODO" },
-    //   ],
-    // });
-  };
+    // construct pitch
+    const pitch = {
+      zone: convertZone(zone),
+      pitchType: pitchType,
+      outcome: name,
+    };
+    // Add new pitch to pitch list
+    const pitches = [...game[activeTeam]?.currentAtBat?.pitches, pitch];
+    // Add pitch list to current at bat
+    const cAB = {
+      ...game[activeTeam].currentAtBat,
+      pitches: pitches,
+    };
 
-  // COUNT
-  useEffect(() => {
-    setZone(null);
-    if (count.strikes === 3) {
-      setOuts(outs + 1);
-      clearCount();
-    } else if (count.balls === 5) {
-      clearCount();
-
-      // base update scenerios
-      if (bases.first && bases.second && bases.third) {
-        // give a run to hitting team
-        const team = isAwayBatting ? "away" : "home";
-        setScore({
-          ...score,
-          [team]: score[team] + 1,
-        });
-      } else if (!bases.first && bases.second && bases.third) {
-        setBases({
-          ...bases,
-          first: true,
-        });
-      } else if (!bases.first && !bases.second && bases.third) {
-        setBases({
-          ...bases,
-          first: true,
-        });
-      } else if (!bases.first && !bases.second && !bases.third) {
-        setBases({
-          ...bases,
-          first: true,
-        });
-      } else if (bases.first && !bases.second && bases.third) {
-        setBases({
-          ...bases,
-          second: true,
-        });
-      } else if (bases.first && !bases.second && !bases.third) {
-        setBases({
-          ...bases,
-          second: true,
-        });
-      } else if (bases.first && bases.second && !bases.third) {
-        setBases({
-          ...bases,
-          third: true,
-        });
-      } else if (!bases.first && !bases.second && !bases.third) {
-        setBases({
-          ...bases,
-          first: true,
-        });
-      }
+    // end at bat
+    if (!["foul", "strike", "ball"].includes(name)) {
+      setGame((prevGame) => ({
+        ...prevGame,
+        [activeTeam]: {
+          ...prevGame[activeTeam],
+          pitcher: {
+            ...prevGame.pitcher,
+            atBats: [prevGame?.[activeTeam]?.pitcher?.atBats, cAB],
+          },
+          currentAtBat: {
+            strikes: 0,
+            balls: 0,
+            hitter: getNextHitter(),
+            pitches: [],
+          },
+        },
+      }));
+    } else {
+      // add a pitch to the current at bat
+      setGame((prevGame) => ({
+        ...prevGame,
+        [activeTeam]: {
+          ...prevGame[activeTeam],
+          currentAtBat: cAB,
+        },
+      }));
     }
-  }, [count]);
 
-  // Outs
-  useEffect(() => {
-    if (outs === 3) {
-      SetInning(inning + 0.5);
-      setOuts(0);
-      setCount({ strikes: 0, balls: 0 });
-      setBases({
-        first: false,
-        second: false,
-        third: false,
-      });
-      setIsAwayBatting(!isAwayBatting);
-    }
-  }, [outs]);
+    handleClosePitchOutcomeModal();
+  };
+
+  const getNextHitter = () => {
+    const hittingTeam = activeTeam === "team1" ? "team2" : "team1";
+    const currentIndex = game[hittingTeam]?.lineup?.findIndex(
+      (user) => user.name === game[activeTeam]?.currentAtBat?.hitter?.name
+    );
+
+    const desiredIndex = currentIndex + 1;
+
+    const hitter =
+      game[hittingTeam].lineup[desiredIndex % game[hittingTeam].lineup?.length];
+
+    return hitter.name;
+  };
+
+  const handleClosePitchTypeModal = () => {
+    setIsPitchTypeModalOpen(false);
+  };
+
+  const handleClosePitchOutcomeModal = () => {
+    setIsPitchOutcomeModalOpen(false);
+  };
+
+  // Initiate pitch type modal and set active zone
+  const onZoneClick = (zone) => {
+    setIsPitchTypeModalOpen(true);
+    setZone(zone);
+  };
+
+  const wallpaperImage = "./images/bg.jpg";
 
   return (
     <div className="App">
-      <header className="App-header">
-        <Container maxWidth="xl">
+      <Header />
+      <ThemeProvider theme={theme}>
+        <Container
+          maxWidth="xl"
+          sx={{
+            backgroundImage: `url(${wallpaperImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "100vh", // Ensure it covers the entire viewport height
+          }}
+        >
+          <br />
           <Grid container spacing={2}>
-            <Grid size={4} item>
-              <ProfileDisplay pitcher={pitcher} />
-              <Typography variant="subtitle1" gutterBottom>
-                Pitch History ({pitcher.pitchCount})
+            <Grid size={5} sx={{ overflow: "auto", maxHeight: "80vh" }}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                sx={{ color: "white" }}
+              >
+                Away Team
               </Typography>
-              <PitchHistory pitches={pitcher.pitches} />
+              <ProfileDisplay pitcher={game[activeTeam].pitcher} />
+              <br />
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                sx={{ color: "white" }}
+              >
+                Pitch Feed
+              </Typography>
+              {/* Current Atbat Pitch Feed */}
+              <PitchHistory
+                pitches={game?.[activeTeam]?.currentAtBat?.pitches}
+                hitter={game?.[activeTeam]?.currentAtBat?.hitter}
+              />
+              <br />
+              {/* Previous Atbat Pitch Feed */}
+              {game?.[activeTeam]?.pitcher?.atBats?.reverse()?.map((atBat) => (
+                <>
+                  <PitchHistory
+                    pitches={atBat?.pitches}
+                    hitter={atBat?.hitter}
+                  />
+                </>
+              ))}
             </Grid>
-            <Grid size={4} item>
+            <Grid size={2}>
               <Box justifyContent="center" alignItems="center">
-
                 {/* STRIKEZONE SELECTION */}
-                <Strikezone setZone={setZone} zone={zone} />
-
-                {/* PITCH SELECTER */}
-                <ButtonGroup
-                  color="secondary"
-                  variant="contained"
-                  aria-label="Basic button group"
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ color: "white" }}
                 >
-                  <Button
-                    color={pitchType === "slider" ? "secondary" : "primary"}
-                    name="slider"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    SL
-                  </Button>
-                  <Button
-                    color={pitchType === "riser" ? "secondary" : "primary"}
-                    name="riser"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    RS
-                  </Button>
-                  <Button
-                    color={pitchType === "drop" ? "secondary" : "primary"}
-                    name="drop"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    DROP
-                  </Button>
-                  <Button
-                    color={pitchType === "screwball" ? "secondary" : "primary"}
-                    name="screwball"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    SCREW
-                  </Button>
-                  <Button
-                    color={
-                      pitchType === "knuckleball" ? "secondary" : "primary"
-                    }
-                    name="knuckleball"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    KCKL
-                  </Button>
-                  <Button
-                    color={pitchType === "curveball" ? "secondary" : "primary"}
-                    name="curveball"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    CRV
-                  </Button>
-                  <Button
-                    color={pitchType === "changeup" ? "secondary" : "primary"}
-                    name="changeup"
-                    onClick={(e) => updatePitchType(e)}
-                  >
-                    CH
-                  </Button>
-                </ButtonGroup>
-
-                {/* PITCH OUTCOME SELECTION */}
-                <ButtonGroup
-                  variant="contained"
-                  aria-label="Basic button group"
-                >
-                  <Button name="strikes" onClick={(e) => updateCount(e)}>
-                    Strike
-                  </Button>
-                  <Button name="balls" onClick={(e) => updateCount(e)}>
-                    Ball
-                  </Button>
-                  <Button name="fouls">Foul</Button>
-                </ButtonGroup>
-
-                {/* PITCH SELECTION Reached Base */}
-                <ButtonGroup
-                  color="success"
-                  variant="contained"
-                  aria-label="Basic button group"
-                >
-                  <Button>Single</Button>
-                  <Button>Double</Button>
-                  <Button>Triple</Button>
-                  <Button>Homerun</Button>
-                  <Button>Walk</Button>
-                </ButtonGroup>
-
-                {/* PITCH SELECTION OUT */}
-                <ButtonGroup
-                  color="error"
-                  variant="contained"
-                  aria-label="Basic button group"
-                >
-                  <Button>Popout</Button>
-                  <Button>Flyout</Button>
-                  <Button>Groundout</Button>
-                </ButtonGroup>
+                  Strikezone
+                </Typography>
+                <Strikezone onZoneClick={onZoneClick} zone={zone} />
+                <br />
+                <OutCounterDisplay />
               </Box>
             </Grid>
-
-            <Grid size={3} item>
-              <Box sx={{ bgcolor: "#282c34" }}>
-                <BaseballDiamond bases={bases} />
-
-                <br />
-
-                <OutCounterDisplay outs={outs} />
-
-                <p>
-                  {Math.trunc(inning)}{" "}
-                  {inning.toString().endsWith(".5") ? (
-                    <ArrowDropDownIcon />
-                  ) : (
-                    <ArrowDropUpIcon />
-                  )}
-                  {count.strikes} - {count.balls}
-                </p>
-
-                <h2>
-                  {score.away} - {score.home}
-                </h2>
-              </Box>
+            <Grid size={5} sx={{ overflow: "auto", maxHeight: "80vh" }}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                sx={{ color: "white" }}
+              >
+                Home Team
+              </Typography>
+              <ProfileDisplay pitcher={game[activeTeam].pitcher} />
+              <br />
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                sx={{ color: "white" }}
+              >
+                Pitch Feed
+              </Typography>
+              {/* Current Atbat Pitch Feed */}
+              <PitchHistory
+                pitches={game?.[activeTeam]?.currentAtBat?.pitches}
+                hitter={game?.[activeTeam]?.currentAtBat?.hitter}
+              />
+              <br />
+              {/* Previous Atbat Pitch Feed */}
+              {game?.[activeTeam]?.pitcher?.atBats?.reverse()?.map((atBat) => (
+                <>
+                  <PitchHistory
+                    pitches={atBat?.pitches}
+                    hitter={atBat?.hitter}
+                  />
+                </>
+              ))}
             </Grid>
           </Grid>
         </Container>
-      </header>
+        <div>
+          <PitchTypeModal
+            isOpen={isPitchTypeModalOpen}
+            onClose={handleClosePitchTypeModal}
+            updatePitchType={updatePitchType}
+            pitchType={pitchType}
+          />
+
+          <OutcomeModal
+            isOpen={isPitchOutcomeModalOpen}
+            onClose={handleClosePitchOutcomeModal}
+            updatePitchOutcome={updatePitchOutcome}
+            pitchType={pitchType}
+          />
+        </div>
+      </ThemeProvider>
+      <Footer />
     </div>
   );
 }
