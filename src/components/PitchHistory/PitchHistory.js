@@ -1,5 +1,4 @@
 import React from "react";
-import Container from "@mui/material/Container";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,7 +15,6 @@ function PitchHistory({ pitches, hitter }) {
             <TableRow
               sx={{
                 "& th": {
-                  color: "rgba(96, 96, 96)",
                   backgroundColor: "#282c34",
                   color: "white",
                 },
@@ -30,13 +28,13 @@ function PitchHistory({ pitches, hitter }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pitches?.reverse()?.map((row, index) => (
+            {pitches?.toReversed()?.map((row, index) => (
               <TableRow key={index}>
                 <TableCell component="th" scope="row">
-                  t
+                  Player Name
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  tt
+                  0-0
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {row.pitchType}

@@ -1,30 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 import Strikezone from "./components/Strikezone/Strikezone";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import PitchTypeModal from "./components/Modals/PitchTypeModal";
 import OutcomeModal from "./components/Modals/OutcomeModal";
 import ProfileDisplay from "./components/PitcherDisplay/PitcherDisplay";
 import PitchHistory from "./components/PitchHistory/PitchHistory";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import { convertZone } from "./utils/utils";
+import { convertZone, wallpaperImage, webisteTheme } from "./utils/utils";
 import "./App.css";
-
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 900,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
 
 function App() {
   // State
@@ -71,15 +59,15 @@ function App() {
   const [isPitchTypeModalOpen, setIsPitchTypeModalOpen] = useState(false);
   const [isPitchOutcomeModalOpen, setIsPitchOutcomeModalOpen] = useState(false);
   // team 1
-  const [team1, setTeam1] = useState("");
-  const [pitcher1, setPitcher1] = useState("");
-  const [atBats1, setAtbats1] = useState([]);
-  const [hitters1, setHitters1] = useState([]);
-  // team 2
-  const [team2, setTeam2] = useState("");
-  const [pitcher2, setPitcher2] = useState("");
-  const [atBats2, setAtbats2] = useState([]);
-  const [hitters2, setHitters2] = useState([]);
+  // const [team1, setTeam1] = useState("");
+  // const [pitcher1, setPitcher1] = useState("");
+  // const [atBats1, setAtbats1] = useState([]);
+  // const [hitters1, setHitters1] = useState([]);
+  // // team 2
+  // const [team2, setTeam2] = useState("");
+  // const [pitcher2, setPitcher2] = useState("");
+  // const [atBats2, setAtbats2] = useState([]);
+  // const [hitters2, setHitters2] = useState([]);
 
   const updatePitchType = (event) => {
     const name = event.target.name;
@@ -166,14 +154,16 @@ function App() {
     setZone(zone);
   };
 
-  const wallpaperImage = "./images/bg.jpg";
+  useEffect(() => {
+    setActiveTeam("team2");
+  }, []);
 
   return (
     <div className="App">
       <Header setTab={setTab} />
       <br />
       <br />
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={webisteTheme}>
         <Container
           maxWidth="xl"
           sx={{
@@ -187,8 +177,10 @@ function App() {
           <Grid container spacing={2}>
             {tab === 1 ? (
               <>
-                <Grid size={{ xs: 1, md: 2, lg: 2, xl: 3 }} sx={{ overflow: "auto", maxHeight: "80vh" }} />
-                <Grid size={{ xs: 10, md: 6, lg: 8, xl: 6 }} sx={{ overflow: "auto", maxHeight: "80vh" }}>
+                <Grid
+                  size={{ xs: 12, md: 8, lg: 6, xl: 6 }}
+                  sx={{ overflow: "auto", maxHeight: "80vh" }}
+                >
                   <Typography
                     variant="subtitle1"
                     gutterBottom
@@ -197,7 +189,11 @@ function App() {
                     Away Team
                   </Typography>
                   <ProfileDisplay pitcher={game[activeTeam].pitcher} />
-                  <br />
+                </Grid>
+                <Grid
+                  size={{ xs: 12, md: 8, lg: 6, xl: 6 }}
+                  sx={{ overflow: "auto", maxHeight: "80vh" }}
+                >
                   <Typography
                     variant="subtitle1"
                     gutterBottom
@@ -210,8 +206,7 @@ function App() {
               </>
             ) : (
               <>
-              <Grid size={{ xs: 1, md: 2, lg: 2, xl: 3 }}></Grid>
-                <Grid size={{ xs: 10, md: 6, lg: 8, xl: 6 }}>
+                <Grid size={{ xs: 12, md: 8, lg: 6, xl: 6 }}>
                   <Box justifyContent="center" alignItems="center">
                     {/* STRIKEZONE SELECTION */}
                     <Typography
@@ -222,19 +217,21 @@ function App() {
                       Strikezone
                     </Typography>
                     <Strikezone onZoneClick={onZoneClick} zone={zone} />
-                    <Typography
-                      variant="subtitle1"
-                      gutterBottom
-                      sx={{ color: "white" }}
-                    >
-                      Pitch Feed
-                    </Typography>
-                    {/* Current Atbat Pitch Feed */}
-                    <PitchHistory
-                      pitches={game?.[activeTeam]?.currentAtBat?.pitches}
-                      hitter={game?.[activeTeam]?.currentAtBat?.hitter}
-                    />
                   </Box>
+                </Grid>
+                <Grid size={{ xs: 12, md: 8, lg: 6, xl: 6 }}>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    sx={{ color: "white" }}
+                  >
+                    Pitch Feed
+                  </Typography>
+                  {/* Current Atbat Pitch Feed */}
+                  <PitchHistory
+                    pitches={game?.[activeTeam]?.currentAtBat?.pitches}
+                    hitter={game?.[activeTeam]?.currentAtBat?.hitter}
+                  />
                 </Grid>
               </>
             )}

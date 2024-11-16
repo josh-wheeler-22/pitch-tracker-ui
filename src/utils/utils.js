@@ -1,3 +1,5 @@
+import { createTheme } from "@mui/material/styles";
+
 export const convertZone = (zone) => {
     switch (zone) {
       case 1:
@@ -22,3 +24,17 @@ export const convertZone = (zone) => {
         return 0;
     }
   };
+
+  export const wallpaperImage = "./images/bg.jpg";
+
+  export const webisteTheme = createTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 900,
+        lg: 1200,
+        xl: 1536,
+      },
+    },
+  });
