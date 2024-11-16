@@ -242,7 +242,6 @@ function App() {
             isOpen={isPitchTypeModalOpen}
             onClose={handleClosePitchTypeModal}
             updatePitchType={updatePitchType}
-            pitchType={pitchType}
           />
 
           <OutcomeModal

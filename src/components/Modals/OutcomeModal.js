@@ -28,8 +28,8 @@ const OutcomeModal = ({ isOpen, onClose, updatePitchOutcome }) => {
           m: 1,
         },
       }}>
-        {/* OUTCOME */}
-        <ButtonGroup variant="contained" aria-label="Basic button group" >
+        {/* OUTCOME */} 
+        <ButtonGroup color="primary" variant="contained" aria-label="Basic button group" sx={{ flexWrap: "wrap", textAlign: 'center' }} >
           <Button name="strike" onClick={(e) => updatePitchOutcome(e)}>
             Strike
           </Button>
@@ -40,8 +40,7 @@ const OutcomeModal = ({ isOpen, onClose, updatePitchOutcome }) => {
             Foul
           </Button>
         </ButtonGroup>
-        <br />
-        <ButtonGroup variant="contained" aria-label="Basic button group">
+        <ButtonGroup color="error" variant="contained" aria-label="Basic button group" sx={{ flexWrap: "wrap", textAlign: 'center' }}>
           <Button name="popout" onClick={(e) => updatePitchOutcome(e)}>
             Popout
           </Button>
@@ -52,8 +51,7 @@ const OutcomeModal = ({ isOpen, onClose, updatePitchOutcome }) => {
             Groundout
           </Button>
         </ButtonGroup>
-        <br />
-        <ButtonGroup variant="contained" aria-label="Basic button group">
+        <ButtonGroup color="success" variant="contained" aria-label="Basic button group" sx={{ flexWrap: "wrap", textAlign: 'center' }}>
           <Button name="single" onClick={(e) => updatePitchOutcome(e)}>
             Single
           </Button>
