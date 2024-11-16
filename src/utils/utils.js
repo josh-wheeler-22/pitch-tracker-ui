@@ -1,24 +1,24 @@
 export const convertZone = (zone) => {
     switch (zone) {
-      case '0.0':
+      case 1:
         return "Top Left";
-      case '0.1':
+      case 2:
         return "Top Middle";
-      case '0.2':
+      case 3:
         return "Top Right";
-      case '1.0':
+      case 4:
         return "Middle Left";
-      case '1.1':
+      case 5:
         return "Middle Middle";
-      case '1.2':
+      case 6:
         return "Middle Right";
-      case '2.0':
+      case 7:
         return "Bottom Left";
-      case '2.1':
+      case 8:
         return "Bottom Middle";
-      case '2.2':
+      case 9:
         return "Bottom Right";
       default:
-        return "";
+        return 0;
     }
   };
