@@ -75,7 +75,6 @@ function PitcherDisplay({ pitcher }) {
         <TableHead>
           <TableRow sx={{ color: "#282c34" }}>
             <TableCell>Name</TableCell>
-            <TableCell>Hand</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -86,12 +85,6 @@ function PitcherDisplay({ pitcher }) {
                 <input 
                   value={row.name} 
                   onChange={e => handleInputChange('name', e.target.value)} 
-                />
-              </TableCell>
-              <TableCell>
-                <input 
-                  value={row.hand} 
-                  onChange={e => handleInputChange('hand', e.target.value)} 
                 />
               </TableCell>
               <TableCell>
