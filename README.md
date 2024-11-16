@@ -26,4 +26,4 @@
 
 ## Architecture
 ### Deployed to AWS S3 Bucket
-![alt text](https://github.com/josh-wheeler-22/pitch-tracker-ui/blob/main/src/images/architecture.jpg)
+![alt text](https://github.com/josh-wheeler-22/pitch-tracker-ui/blob/main/src/images/architecture.png)
