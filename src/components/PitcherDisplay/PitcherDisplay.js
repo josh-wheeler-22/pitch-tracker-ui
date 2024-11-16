@@ -94,7 +94,7 @@ function PitcherDisplay({ pitcher }) {
           ))}
         </TableBody>
       </Table>
-      <Button sx={{ color: "#282c34" }} onClick={handleAddRow}>Add Row</Button>
+      <Button sx={{ color: "#282c34" }} onClick={handleAddRow}>Add Player</Button>
     </TableContainer>
     </Container>
   );
