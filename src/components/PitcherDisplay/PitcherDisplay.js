@@ -74,7 +74,7 @@ function PitcherDisplay({ pitcher }) {
       <Table>
         <TableHead>
           <TableRow sx={{ color: "#282c34" }}>
-            <TableCell>Lineup</TableCell>
+            <TableCell>Lineup </TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
