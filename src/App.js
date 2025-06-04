@@ -163,6 +163,8 @@ function App() {
       <Header setTab={setTab} />
       <br />
       <br />
+      <br />
+      <br />
       <ThemeProvider theme={webisteTheme}>
         <Container
           maxWidth="xl"
@@ -171,6 +173,7 @@ function App() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             minHeight: "100vh", // Ensure it covers the entire viewport height
+            paddingTop : "100px",
           }}
         >
           <br />
