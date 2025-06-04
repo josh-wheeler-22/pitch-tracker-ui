@@ -189,7 +189,7 @@ function App() {
                     gutterBottom
                     sx={{ color: "white" }}
                   >
-                    Away Team
+                    Away Team!
                   </Typography>
                   <ProfileDisplay pitcher={game[activeTeam].pitcher} />
                 </Grid>
